@@ -82,6 +82,7 @@ MQTT *client = NULL;
 int currentSpeed = 0;      
 int savedSpeed   = 25;     
 bool lightsOn    = true;   
+String lastPM1  = "0";
 String lastPM25 = "0";
 String lastPM10 = "0";
 int drawnSpeed = -999;     
@@ -96,6 +97,7 @@ const byte CMD_PMS_ACTIVE[] = {0x42, 0x4D, 0xE1, 0x00, 0x01, 0x01, 0x71};
 
 // --- SMOOTHING VARIABLES FOR AQ SENSOR ---
 const int WINDOW = 10;      // Size of the moving average window
+int pm1Hist[WINDOW];        // Buffer for PM1.0 readings
 int pm25Hist[WINDOW];       // Buffer for PM2.5 readings
 int pm10Hist[WINDOW];       // Buffer for PM10 readings
 int histIndex = 0;          // Current write position in the buffer
@@ -255,10 +257,12 @@ void loop() {
         lastReport = millis();
 
         // 1. Calculate the Average
+        int pm1Smooth  = smooth(pm1Hist);
         int pm25Smooth = smooth(pm25Hist);
         int pm10Smooth = smooth(pm10Hist);
 
         // 2. Update Global Strings (Source of Truth)
+        lastPM1  = String(pm1Smooth);
         lastPM25 = String(pm25Smooth);
         lastPM10 = String(pm10Smooth);
 
@@ -558,10 +562,12 @@ void processSensorData() {
         int sentChecksum = (rxBuffer[startIdx + 30] << 8) + rxBuffer[startIdx + 31];
 
         if (calcChecksum == sentChecksum) {            
-            // 3. READ ATMOSPHERIC DATA (Indices 12 & 14)
+            // 3. READ ATMOSPHERIC DATA (Indices 10, 12 & 14)
+            int pm1Val  = (rxBuffer[startIdx + 10] << 8) + rxBuffer[startIdx + 11];
             int pm25Val = (rxBuffer[startIdx + 12] << 8) + rxBuffer[startIdx + 13];
             int pm10Val = (rxBuffer[startIdx + 14] << 8) + rxBuffer[startIdx + 15];
 
+            pm1Hist[histIndex]  = pm1Val;
             pm25Hist[histIndex] = pm25Val;
             pm10Hist[histIndex] = pm10Val;
             histIndex++;
@@ -582,6 +588,7 @@ void publishAll() {
         int pwm = map(currentSpeed, 0, 100, 0, 255);
         client->publish(p + "fan/state", String(pwm)); delay(20);
         client->publish(p + "fan/setpoint", String(pwm)); delay(20);
+        client->publish(p + "sensor/pm1", lastPM1); delay(20);
         client->publish(p + "sensor/pm25", lastPM25); delay(20);
         client->publish(p + "sensor/pm10", lastPM10);
     }

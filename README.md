@@ -299,6 +299,11 @@ much easier than fighting with a phone.
 ```
 mqtt:
   sensor:
+    - name: "Aeris PM1.0"
+      state_topic: "aeris/purifier/sensor/pm1"
+      unit_of_measurement: "µg/m³"
+      device_class: pm1
+      state_class: measurement
     - name: "Aeris PM2.5"
       state_topic: "aeris/purifier/sensor/pm25"
       unit_of_measurement: "µg/m³"
