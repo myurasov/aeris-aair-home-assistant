@@ -128,7 +128,17 @@ void setup() {
     pinMode(BTN_UP, INPUT_PULLDOWN); pinMode(BTN_DOWN, INPUT_PULLDOWN);
     pinMode(BTN_EXTRA, INPUT_PULLDOWN); pinMode(BTN_POWER, INPUT_PULLDOWN);
     
-    tft.begin(); tft.fillScreen(ILI9341_BLACK); tft.setRotation(3); 
+    // No wired reset pin: let panel power settle, then explicitly reset it.
+    digitalWrite(PIN_DISP_BL, LOW);
+    delay(500);
+    tft.begin();
+    SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
+    tft.writecommand(ILI9341_SWRESET);
+    SPI.endTransaction();
+    delay(150);
+    tft.begin();
+    tft.setRotation(3);
+    tft.fillScreen(ILI9341_BLACK);
     Serial1.begin(9600); RGB.control(true);
 
     EEPROM.get(EEPROM_ADDR, mySettings);
