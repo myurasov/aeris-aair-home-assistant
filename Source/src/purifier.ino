@@ -564,10 +564,10 @@ void processSensorData() {
         int sentChecksum = (rxBuffer[startIdx + 30] << 8) + rxBuffer[startIdx + 31];
 
         if (calcChecksum == sentChecksum) {            
-            // 3. READ ATMOSPHERIC DATA (Indices 10, 12 & 14)
-            int pm1Val  = (rxBuffer[startIdx + 10] << 8) + rxBuffer[startIdx + 11];
-            int pm25Val = (rxBuffer[startIdx + 12] << 8) + rxBuffer[startIdx + 13];
-            int pm10Val = (rxBuffer[startIdx + 14] << 8) + rxBuffer[startIdx + 15];
+            // 3. READ MASS DATA (32 3D frame; indices 10-21 are particle counts)
+            int pm1Val  = (rxBuffer[startIdx + 4] << 8) + rxBuffer[startIdx + 5];
+            int pm25Val = (rxBuffer[startIdx + 6] << 8) + rxBuffer[startIdx + 7];
+            int pm10Val = (rxBuffer[startIdx + 8] << 8) + rxBuffer[startIdx + 9];
 
             pm1Hist[histIndex]  = pm1Val;
             pm25Hist[histIndex] = pm25Val;
