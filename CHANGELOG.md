@@ -26,6 +26,9 @@
 - **Ring and button lights:** the 74HC595 shift register behind the ring and button lights (`D5` data, `D6` clock,
   `D7` latch, `A4` boot handshake) is now driven, so the ring switches with the display instead of keeping
   its random power-up state.
+- **Web page form submits:** the web server now waits up to a second for the request line. Before, a
+  browser request that arrived just after the connection got the plain page back and the form (Save or
+  Lights) was silently ignored.
 
 ### Upgrade Notes
 
