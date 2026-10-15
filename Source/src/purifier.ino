@@ -541,6 +541,7 @@ void initRing() {
     EEPROM.get(LED_ADDR, lp);
     if (lp.magic != 0xA8 || lp.sum != ledSum() || lp.fx[0] > 4 || lp.fx[1] >= LED_FX_N || lp.speed[0] < 10 || lp.speed[1] < 10)
         lp = LedPrefs{0xA8, {0, 0}, {255, 255}, {0, 0}, {1, 1}, 15, {100, 100}, 0};
+    for (int c = 0; c < 2; c++) if (lp.follow[c]) lp.on[c] = lightsOn;   // match the display, also in setup mode
     ledsChanged(); ledDirty = 0;
 }
 
