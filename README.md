@@ -357,7 +357,8 @@ on `ring/state` and `buttons/state`. Any subset of these keys works:
 
 For example, `{"state":"ON","brightness":40,"effect":"breathe"}` on `aeris/purifier/ring/set` makes
 a dim breathing night light. In Home Assistant, add to the `mqtt:` section above (a switch per button
-light works like the follow switch, with the keys from the table):
+light works like the follow switch, with the keys from the table; the effect select gives a
+dashboard dropdown):
 
 ```
   light:
@@ -385,6 +386,13 @@ light works like the follow switch, with the keys from the table):
       max: 250
       step: 10
       unit_of_measurement: "%"
+  select:
+    - name: "Aeris Ring Effect"
+      command_topic: "aeris/purifier/ring/set"
+      command_template: '{"effect": "{{ value }}"}'
+      state_topic: "aeris/purifier/ring/state"
+      value_template: "{{ value_json.effect }}"
+      options: [solid, blink, breathe, pulse, candle]
   switch:
     - name: "Aeris Ring Follows Display"
       command_topic: "aeris/purifier/ring/set"
