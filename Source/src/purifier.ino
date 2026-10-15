@@ -557,13 +557,16 @@ uint8_t ledAt(float l, int c) {
 }
 
 // Lightness 0..1 of light e of n at time t (ms). Multi-light effects (5+) on a single light are solid.
-float ledFx(uint8_t fx, int e, int n, uint32_t t, float cand, float tw) {
+float ledFx(uint8_t fx, int e, int n, uint32_t t, float cand, float tw, uint8_t sp) {
     if (fx >= 5 && n < 2) return 1;
     float x;
     switch (fx) {
         case 1: return (t / 500) % 2 ? 0 : 1;
         case 2: case 8: if (fx == 8) t += e * 750; x = (t % 3000) / 1500.0f; if (x > 1) x = 2 - x; return x < 0.05f ? 0 : (x - 0.05f) / 0.95f;
-        case 3: t %= 2400; return t < 300 ? sinf(t * 3.1416f / 300) : t >= 500 && t < 800 ? 0.7f * sinf((t - 500) * 3.1416f / 300) : 0;
+        case 3: {   // two soft swells, then a pause capped at ~3 s of real time (21 virtual ms per speed %)
+            uint32_t q = 21u * sp; if (q > 1600) q = 1600; t %= 800 + q;
+            return t < 300 ? sinf(t * 3.1416f / 300) : t >= 500 && t < 800 ? 0.7f * sinf((t - 500) * 3.1416f / 300) : 0;
+        }
         case 4: return cand;
         case 5: return (int)((t / 250) % n) == e ? 1 : 0;
         case 6: { int k = (t / 200) % (2 * n - 2); return (k < n ? k : 2 * n - 2 - k) == e ? 1 : 0; }
@@ -585,9 +588,9 @@ void ledsTick() {
             if (c) for (int e = 0; e < 4; e++) { if (tw[e]) { if (++tw[e] > 1200) tw[e] = 0; } else if (random(1500) == 0) tw[e] = 1; }
         }
     }
-    if (lp.on[0]) d[6] = d[0] = ledAt(ledFx(lp.fx[0], 0, 1, vt[0], cand[4], 0), 0);
+    if (lp.on[0]) d[6] = d[0] = ledAt(ledFx(lp.fx[0], 0, 1, vt[0], cand[4], 0, lp.speed[0]), 0);
     if (lp.on[1]) for (int e = 0; e < 4; e++) if (lp.mask & (1 << e))
-        d[2 + e] = ledAt(ledFx(lp.fx[1], e, 4, vt[1], cand[e], tw[e] < 600 ? tw[e] / 600.0f : (1200 - tw[e]) / 600.0f), 1);
+        d[2 + e] = ledAt(ledFx(lp.fx[1], e, 4, vt[1], cand[e], tw[e] < 600 ? tw[e] / 600.0f : (1200 - tw[e]) / 600.0f, lp.speed[1]), 1);
     for (int i = 0; i < 8; i++) ledDuty[i] = d[i];
 }
 
