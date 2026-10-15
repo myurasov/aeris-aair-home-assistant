@@ -18,6 +18,9 @@
 
 - **MQTT identity:** each unit connects as `Aeris-<device ID>` instead of the shared `Aeris` client ID, so
   several purifiers can share one broker without disconnecting each other.
+- **Ring and button lights:** the 74HC595 shift register behind the button LEDs (`D5` data, `D6` clock,
+  `D7` latch, `A4` boot handshake) is now driven, so the ring switches with the display instead of keeping
+  its random power-up state.
 
 ### Upgrade Notes
 
@@ -32,3 +35,5 @@
 - USB setup on a purifier with Device OS 3.3.1 (macOS, Node.js): `setup` for a newly compiled build booted it
   straight onto Wi-Fi and MQTT without the hotspot; `upgrade` to another new build kept every setting;
   `check` accepts the release `aerisFirmware.bin`.
+- Ring: on a unit whose ring stayed dark, it now lights with the display and goes dark when the display
+  is switched off over MQTT.
