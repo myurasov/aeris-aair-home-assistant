@@ -78,12 +78,10 @@ SYSTEM_THREAD(ENABLED);
 
 TCPServer webServer(80);
 MQTT *client = NULL;
-String mqttClientId;
 
 int currentSpeed = 0;      
 int savedSpeed   = 25;     
 bool lightsOn    = true;   
-String lastPM1  = "0";
 String lastPM25 = "0";
 String lastPM10 = "0";
 int drawnSpeed = -999;     
@@ -98,7 +96,6 @@ const byte CMD_PMS_ACTIVE[] = {0x42, 0x4D, 0xE1, 0x00, 0x01, 0x01, 0x71};
 
 // --- SMOOTHING VARIABLES FOR AQ SENSOR ---
 const int WINDOW = 10;      // Size of the moving average window
-int pm1Hist[WINDOW];        // Buffer for PM1.0 readings
 int pm25Hist[WINDOW];       // Buffer for PM2.5 readings
 int pm10Hist[WINDOW];       // Buffer for PM10 readings
 int histIndex = 0;          // Current write position in the buffer
@@ -120,7 +117,6 @@ STARTUP(softap_set_application_page_handler(http_handler, nullptr));
 
 void setup() {
     Serial.begin(9600);
-    mqttClientId = "Aeris-" + System.deviceID();
     
     pinMode(PIN_FAN, OUTPUT);
     pinMode(PIN_SENSOR_TX, OUTPUT); digitalWrite(PIN_SENSOR_TX, HIGH); 
@@ -128,17 +124,7 @@ void setup() {
     pinMode(BTN_UP, INPUT_PULLDOWN); pinMode(BTN_DOWN, INPUT_PULLDOWN);
     pinMode(BTN_EXTRA, INPUT_PULLDOWN); pinMode(BTN_POWER, INPUT_PULLDOWN);
     
-    // No wired reset pin: let panel power settle, then explicitly reset it.
-    digitalWrite(PIN_DISP_BL, LOW);
-    delay(500);
-    tft.begin();
-    SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
-    tft.writecommand(ILI9341_SWRESET);
-    SPI.endTransaction();
-    delay(150);
-    tft.begin();
-    tft.setRotation(3);
-    tft.fillScreen(ILI9341_BLACK);
+    tft.begin(); tft.fillScreen(ILI9341_BLACK); tft.setRotation(3); 
     Serial1.begin(9600); RGB.control(true);
 
     EEPROM.get(EEPROM_ADDR, mySettings);
@@ -235,7 +221,7 @@ void loop() {
         }
         if (client != NULL) {
             if (!client->isConnected()) {
-                client->connect(mqttClientId.c_str(), mySettings.mqtt_user, mySettings.mqtt_pass);
+                client->connect("Aeris", mySettings.mqtt_user, mySettings.mqtt_pass);
                 if (client->isConnected()) {
                     client->subscribe(String(mySettings.topic_prefix) + "fan/set");
                     client->subscribe(String(mySettings.topic_prefix) + "lights/set");
@@ -269,12 +255,10 @@ void loop() {
         lastReport = millis();
 
         // 1. Calculate the Average
-        int pm1Smooth  = smooth(pm1Hist);
         int pm25Smooth = smooth(pm25Hist);
         int pm10Smooth = smooth(pm10Hist);
 
         // 2. Update Global Strings (Source of Truth)
-        lastPM1  = String(pm1Smooth);
         lastPM25 = String(pm25Smooth);
         lastPM10 = String(pm10Smooth);
 
@@ -574,12 +558,10 @@ void processSensorData() {
         int sentChecksum = (rxBuffer[startIdx + 30] << 8) + rxBuffer[startIdx + 31];
 
         if (calcChecksum == sentChecksum) {            
-            // 3. READ MASS DATA (32 3D frame; indices 10-21 are particle counts)
-            int pm1Val  = (rxBuffer[startIdx + 4] << 8) + rxBuffer[startIdx + 5];
-            int pm25Val = (rxBuffer[startIdx + 6] << 8) + rxBuffer[startIdx + 7];
-            int pm10Val = (rxBuffer[startIdx + 8] << 8) + rxBuffer[startIdx + 9];
+            // 3. READ ATMOSPHERIC DATA (Indices 12 & 14)
+            int pm25Val = (rxBuffer[startIdx + 12] << 8) + rxBuffer[startIdx + 13];
+            int pm10Val = (rxBuffer[startIdx + 14] << 8) + rxBuffer[startIdx + 15];
 
-            pm1Hist[histIndex]  = pm1Val;
             pm25Hist[histIndex] = pm25Val;
             pm10Hist[histIndex] = pm10Val;
             histIndex++;
@@ -600,7 +582,6 @@ void publishAll() {
         int pwm = map(currentSpeed, 0, 100, 0, 255);
         client->publish(p + "fan/state", String(pwm)); delay(20);
         client->publish(p + "fan/setpoint", String(pwm)); delay(20);
-        client->publish(p + "sensor/pm1", lastPM1); delay(20);
         client->publish(p + "sensor/pm25", lastPM25); delay(20);
         client->publish(p + "sensor/pm10", lastPM10);
     }
