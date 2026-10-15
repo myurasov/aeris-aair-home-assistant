@@ -18,7 +18,7 @@
 
 - **MQTT identity:** each unit connects as `Aeris-<device ID>` instead of the shared `Aeris` client ID, so
   several purifiers can share one broker without disconnecting each other.
-- **Ring and button lights:** the 74HC595 shift register behind the button LEDs (`D5` data, `D6` clock,
+- **Ring and button lights:** the 74HC595 shift register behind the ring and button lights (`D5` data, `D6` clock,
   `D7` latch, `A4` boot handshake) is now driven, so the ring switches with the display instead of keeping
   its random power-up state.
 
