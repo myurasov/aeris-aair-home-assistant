@@ -29,10 +29,13 @@
 - **Web page form submits:** the web server now waits up to a second for the request line. Before, a
   browser request that arrived just after the connection got the plain page back and the form (Save or
   Lights) was silently ignored.
+- **PM readings:** PM2.5 and PM10 come from the sensor's mass fields (µg/m³). Before, they came from its
+  particle-count channels, which read many times higher and jumped with airflow.
 
 ### Upgrade Notes
 
 - MQTT topics, payloads and web settings are unchanged.
+- PM2.5 and PM10 readings drop to real µg/m³ values; review automation thresholds tuned to the old numbers.
 - A newly compiled build still resets the settings on its first boot, unless it is installed with
   `tools/usb-setup`.
 - Builds need the SparkIntervalTimer 1.3.8 library, declared in `Source/project.properties` (the Particle
