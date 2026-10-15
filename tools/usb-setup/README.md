@@ -12,7 +12,7 @@ you flash the real firmware. The helper stays offline and only touches the setti
 
 - The unit already runs Device OS 3.3.1 (see the bootloader and system steps in the main README).
 - dfu-util and the Particle CLI, as in the main README.
-- Node.js 18 or newer; run `npm install` in this folder once.
+- Node.js 20 or newer; run `npm install` in this folder once.
 - The helper binary, built like the main firmware (free Particle account):
   `particle compile photon firmware --target 3.3.1 --saveTo usb-setup.bin`
 
@@ -42,13 +42,13 @@ with `check` instead of `setup`.
 Same steps, but in step 3 run:
 `node provision.mjs upgrade --from <firmware now on the unit>.bin --app <new firmware>.bin`
 
-It refuses if the unit's settings were not made by the `--from` build. Afterwards flash only the new
-firmware: the old one would no longer match the settings and would reset them.
+It refuses if the unit's settings belong to neither build; if an earlier attempt already signed them for
+the new build, it simply writes and checks them again. Afterwards flash only the new firmware: the old
+one would no longer match the settings and would reset them.
 
 ## Notes
 
 - Limits: Wi-Fi password 63 characters, MQTT user and password 31.
 - `--backup <file>` saves the unit's previous settings first (the file contains passwords).
 - Several Photons on USB: add `--device <device id>` (from `particle usb list`).
-- If a step fails, start again from step 1. Exception: after a successful `upgrade` write, just flash
-  the new firmware.
+- If a step fails, start again from step 1 (also after an `upgrade` that may have written already).
