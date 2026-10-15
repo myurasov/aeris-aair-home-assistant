@@ -13,6 +13,11 @@
 - **USB setup:** [`tools/usb-setup`](tools/usb-setup/README.md) writes the Wi-Fi and MQTT settings over USB,
   skipping the `Aeris-XXXX` hotspot and the settings page. It can also install a newer build without
   resetting the settings.
+- **Ring and button light control:** the ring and the button lights are two lights with brightness,
+  effects (`solid`, `blink`, `breathe`, `pulse`, `candle`; buttons also `chase`, `bounce`, `fill`, `wave`,
+  `twinkle`), effect speed and follow-the-display, set over MQTT JSON (`ring/set`, `buttons/set`, retained
+  `.../state`), from Home Assistant or the web page, and saved on the unit. Dimming is 128-step PWM at
+  156 Hz from a hardware timer.
 
 ### Fixed
 
@@ -27,6 +32,8 @@
 - MQTT topics, payloads and web settings are unchanged.
 - A newly compiled build still resets the settings on its first boot, unless it is installed with
   `tools/usb-setup`.
+- Builds need the SparkIntervalTimer 1.3.8 library, declared in `Source/project.properties` (the Particle
+  cloud compiler fetches it). The light settings live at EEPROM address 1024, apart from the other settings.
 
 ### Validation
 
@@ -37,3 +44,5 @@
   `check` accepts the release `aerisFirmware.bin`.
 - Ring: on a unit whose ring stayed dark, it now lights with the display and goes dark when the display
   is switched off over MQTT.
+- Light control on a unit: every effect, speed, the dimmest level, the web form and saving across a
+  reboot; Home Assistant lights, speed sliders and switches round-trip; Wi-Fi and MQTT unaffected.
