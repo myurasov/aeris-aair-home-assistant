@@ -31,11 +31,18 @@
   Lights) was silently ignored.
 - **PM readings:** PM2.5 and PM10 come from the sensor's mass fields (µg/m³). Before, they came from its
   particle-count channels, which read many times higher and jumped with airflow.
+- **Fan speeds:** 5 % left the fan standing still, and the steps were very uneven (5 -> 10 % went from off
+  to about a fifth of full speed, 50 -> 100 % added only a quarter more). The 20 steps now follow a measured
+  speed curve: 5 % is the slowest steady speed, and each step adds about the same airflow. A start from
+  standstill gets half a second of extra drive.
 
 ### Upgrade Notes
 
 - MQTT topics, payloads and web settings are unchanged.
 - PM2.5 and PM10 readings drop to real µg/m³ values; review automation thresholds tuned to the old numbers.
+- The same fan percentage now runs at a different speed (for example 50 % is about 60 % of full speed
+  instead of about 77 %); review automations that set fixed percentages. The README's Home Assistant fan
+  example now reports the unit's exact percentage in 5 % steps.
 - A newly compiled build still resets the settings on its first boot, unless it is installed with
   `tools/usb-setup`.
 - Builds need the SparkIntervalTimer 1.3.8 library, declared in `Source/project.properties` (the Particle
@@ -52,3 +59,5 @@
   is switched off over MQTT.
 - Light control on a unit: every effect, speed, the dimmest level, the web form and saving across a
   reboot; Home Assistant lights, speed sliders and switches round-trip; Wi-Fi and MQTT unaffected.
+- Fan speed: measured with a microphone (fan-tone pitch and loudness) across every PWM value: start,
+  stop and the speed curve; the new steps checked for even airflow and starts from standstill.
