@@ -12,6 +12,8 @@
 
 - **Fan speed step:** 1 % by default, 1-25 % in the web page's Fan section or over `fan/step/set`
   (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
+- **Fan resume:** the unit saves its fan speed (or off) a few seconds after a change and resumes it after a
+  reboot or power cut. The power button resumes the last speed exactly (it used to raise anything below 10 %).
 - **USB setup:** [`tools/usb-setup`](tools/usb-setup/README.md) writes the Wi-Fi and MQTT settings over USB,
   skipping the `Aeris-XXXX` hotspot and the settings page. It can also install a newer build without
   resetting the settings.
@@ -37,6 +39,9 @@
   to about a fifth of full speed, 50 -> 100 % added only a quarter more). Speeds now follow a measured speed
   curve: 1 % is the slowest steady speed and each percent adds about the same airflow. A start from
   standstill gets half a second of extra drive.
+- **Buttons:** the panel's button lines are active-low, but they were read as active-high: every action ran
+  on release instead of on press, and at startup each button counted as pressed once, which switched the fan
+  off after every boot. They are now read as active-low with pull-ups.
 
 ### Upgrade Notes
 
