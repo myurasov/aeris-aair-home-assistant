@@ -59,6 +59,8 @@ upstream releases (v5 = 5.0.0); builds before the release report `6.0.0-dev`.
   off after every boot. They are now read as active-low with pull-ups.
 - **Display on:** switching the display on showed the screen being wiped from top to bottom; it is now
   redrawn before the backlight comes on.
+- **Web page reset:** FACTORY RESET erased the Wi-Fi and MQTT settings on one click; it and ENTER DFU MODE now
+  ask for confirmation, and a new REBOOT button restarts the unit with all settings kept.
 
 ### Upgrade Notes
 
