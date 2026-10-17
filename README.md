@@ -18,7 +18,7 @@ This guide will walk you through flashing a new firmware onto the Aeris Aair 3-i
 
 ## Disclaimer
 
-The steps below are not complicated to do but make sure you read through everything before committing. In terms of feature loss, there is no built in logic to adjust fan speed based on air quality. Since the device can be controlled over MQTT now that logic can be done via Home Assistant. I have included an example automation you can add to Home Assistant to do just this.
+The steps below are not complicated to do but make sure you read through everything before committing. The unit adjusts its fan speed to air quality on its own in the auto modes (see [Auto Modes](#auto-modes)), and everything can also be controlled over MQTT, for example from Home Assistant.
 
 <br>
 <br>
@@ -293,7 +293,7 @@ It can also update the firmware later without losing the settings.
 3.  Hit save and the unit will reboot once more and you should see
     any display changes if you made them.
 
-4.  Note that you can enter your purifier back into DFU Mode over this interface. This way you can flash a new firmware to it without having to unscrew the top to get to the board again.
+4.  Note that you can enter your purifier back into DFU Mode over this interface. This way you can flash a new firmware to it without having to unscrew the top to get to the board again. The page also has a REBOOT button, which restarts the unit with all settings kept, and FACTORY RESET, which erases the Wi-Fi and MQTT settings; DFU mode and factory reset ask for confirmation first.
 
 ### Home Assistant
 
@@ -433,7 +433,7 @@ dashboard dropdown):
 
 The unit sets its own fan speed from its PM2.5 reading in the two auto modes, so no Home Assistant automation
 is needed. Auto-low runs at 22 % up to 5 µg/m³ and adds 1.56 % per µg/m³ up to 100 % at 55 µg/m³ (the start of
-the US EPA "unhealthy" range); auto-high runs 1.25 times faster. Switch modes with A, with the fan's preset in
+the US EPA "unhealthy" range); auto-high gives 1.25 times that airflow. Switch modes with A, with the fan's preset in
 Home Assistant, or by publishing `manual`, `auto-low` or `auto-high` to `fan/mode/set` (retained state on
 `fan/mode/state`). Setting a speed with + / - or `fan/set` switches back to manual.
 
