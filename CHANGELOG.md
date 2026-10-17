@@ -8,8 +8,19 @@
 
 ## Unreleased
 
+Planned as 6.0.0. Versions follow [semantic versioning](https://semver.org) from here on, continuing the
+upstream releases (v5 = 5.0.0); builds before the release report `6.0.0-dev`.
+
 ### Added
 
+- **Fan modes:** A switches between manual, auto-low and auto-high; the mode shows under the % sign. The auto
+  modes set the speed on the unit from PM2.5 (auto-low 22 % up to 5 µg/m³, then +1.56 % per µg/m³ to 100 % at
+  55; auto-high 1.25 times that), so no Home Assistant automation is needed. `fan/mode/set` and the retained
+  `fan/mode/state` (also as Home Assistant fan presets); any manual speed change returns to manual.
+- **Power button:** a short press switches the screen on or off, holding it for a second switches the unit
+  on or off; `fan/power/set` (`ON` / `OFF`) does the same and keeps the mode.
+- **Version:** the firmware reports its version (semver) on the web page, retained on `version`, and on the
+  screen while power and A are pressed together.
 - **Fan speed step:** 1 % by default, 1-25 % in the web page's Fan section or over `fan/step/set`
   (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
 - **Fan resume:** the unit saves its fan speed (or off) a few seconds after a change and resumes it after a
@@ -59,6 +70,10 @@
   `tools/usb-setup`.
 - Builds need the SparkIntervalTimer 1.3.8 library, declared in `Source/project.properties` (the Particle
   cloud compiler fetches it). The light settings live at EEPROM address 1024, apart from the other settings.
+- A no longer switches the screen (it changes the mode); a short press of power does, and switching the
+  unit off needs power held for a second. The README's Home Assistant fan example now uses `fan/power/set`
+  for on / off and offers the auto modes as presets; its smart-control automation is replaced by the auto
+  modes.
 
 ### Validation
 
