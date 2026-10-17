@@ -10,6 +10,8 @@
 
 ### Added
 
+- **Fan speed step:** 1 % by default, 1-25 % in the web page's Fan section or over `fan/step/set`
+  (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
 - **USB setup:** [`tools/usb-setup`](tools/usb-setup/README.md) writes the Wi-Fi and MQTT settings over USB,
   skipping the `Aeris-XXXX` hotspot and the settings page. It can also install a newer build without
   resetting the settings.
@@ -32,8 +34,8 @@
 - **PM readings:** PM2.5 and PM10 come from the sensor's mass fields (µg/m³). Before, they came from its
   particle-count channels, which read many times higher and jumped with airflow.
 - **Fan speeds:** 5 % left the fan standing still, and the steps were very uneven (5 -> 10 % went from off
-  to about a fifth of full speed, 50 -> 100 % added only a quarter more). The 20 steps now follow a measured
-  speed curve: 5 % is the slowest steady speed, and each step adds about the same airflow. A start from
+  to about a fifth of full speed, 50 -> 100 % added only a quarter more). Speeds now follow a measured speed
+  curve: 1 % is the slowest steady speed and each percent adds about the same airflow. A start from
   standstill gets half a second of extra drive.
 
 ### Upgrade Notes
@@ -42,7 +44,7 @@
 - PM2.5 and PM10 readings drop to real µg/m³ values; review automation thresholds tuned to the old numbers.
 - The same fan percentage now runs at a different speed (for example 50 % is about 60 % of full speed
   instead of about 77 %); review automations that set fixed percentages. The README's Home Assistant fan
-  example now reports the unit's exact percentage in 5 % steps.
+  example now reports the unit's exact percentage in 1 % steps.
 - A newly compiled build still resets the settings on its first boot, unless it is installed with
   `tools/usb-setup`.
 - Builds need the SparkIntervalTimer 1.3.8 library, declared in `Source/project.properties` (the Particle
