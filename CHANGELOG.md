@@ -42,6 +42,8 @@
 - **Buttons:** the panel's button lines are active-low, but they were read as active-high: every action ran
   on release instead of on press, and at startup each button counted as pressed once, which switched the fan
   off after every boot. They are now read as active-low with pull-ups.
+- **Display on:** switching the display on showed the screen being wiped from top to bottom; it is now
+  redrawn before the backlight comes on.
 
 ### Upgrade Notes
 
