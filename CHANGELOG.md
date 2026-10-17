@@ -13,14 +13,14 @@ upstream releases (v5 = 5.0.0); builds before the release report `6.0.0-dev`.
 
 ### Added
 
-- **Fan modes:** A switches between manual, auto-low and auto-high; the mode shows under the % sign. The auto
+- **Fan modes:** A switches between manual, auto-low and auto-high; an auto mode shows under the % sign. The auto
   modes set the speed on the unit from PM2.5 (auto-low 22 % up to 5 µg/m³, then +1.56 % per µg/m³ to 100 % at
   55; auto-high 1.25 times that), so no Home Assistant automation is needed. `fan/mode/set` and the retained
   `fan/mode/state` (also as Home Assistant fan presets); any manual speed change returns to manual.
 - **Power button:** a short press switches the screen on or off, holding it for a second switches the unit
   on or off; `fan/power/set` (`ON` / `OFF`) does the same and keeps the mode.
 - **Version:** the firmware reports its version (semver) on the web page, retained on `version`, and on the
-  screen while power and A are pressed together.
+  screen while A is held for two seconds.
 - **Fan speed step:** 1 % by default, 1-25 % in the web page's Fan section or over `fan/step/set`
   (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
 - **Fan resume:** the unit saves its fan speed (or off) a few seconds after a change and resumes it after a
