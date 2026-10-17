@@ -14,6 +14,8 @@
   (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
 - **Fan resume:** the unit saves its fan speed (or off) a few seconds after a change and resumes it after a
   reboot or power cut. The power button resumes the last speed exactly (it used to raise anything below 10 %).
+- **- to off:** stepping the fan down to 0 with - stops it but keeps the screen on (showing OFF); the power
+  button, the display button and MQTT still switch the screen off.
 - **USB setup:** [`tools/usb-setup`](tools/usb-setup/README.md) writes the Wi-Fi and MQTT settings over USB,
   skipping the `Aeris-XXXX` hotspot and the settings page. It can also install a newer build without
   resetting the settings.
