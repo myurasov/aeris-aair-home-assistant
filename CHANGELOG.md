@@ -18,7 +18,7 @@ Builds report `6.0.0-dev`.
 ### Added
 
 - **Fan modes:** A switches between manual, auto-low and auto-high; an auto mode shows under the % sign. The
-  auto modes set the speed on the unit from PM2.5 (auto-low 22 % up to 5 µg/m³, then +1.56 % per µg/m³ to
+  auto modes set the speed on the unit from PM2.5 (auto-low 20 % up to 5 µg/m³, then +1.6 % per µg/m³ to
   100 % at 55; auto-high 1.25 times that), so no Home Assistant automation is needed. `fan/mode/set` and the
   retained `fan/mode/state` (also as Home Assistant fan presets); any manual speed change returns to manual.
 - **Power button:** a short press switches the screen on or off, holding it for a second switches the unit
@@ -30,7 +30,7 @@ Builds report `6.0.0-dev`.
   (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
 - **Fan resume:** the unit saves its fan speed (or off) a few seconds after a change and resumes it after a
   reboot or power cut. The power button resumes the last speed exactly (it used to raise anything below 10 %).
-- **- to off:** holding - stops at 22 %; a separate press of - then stops the fan but keeps the screen on
+- **- to off:** holding - stops at 20 %; a separate press of - then stops the fan but keeps the screen on
   (showing OFF).
 - **Web page:** a REBOOT button restarts the unit with all settings kept.
 
@@ -38,8 +38,8 @@ Builds report `6.0.0-dev`.
 
 - **Fan speeds:** 5 % left the fan standing still, and the steps were very uneven (5 -> 10 % went from off
   to about a fifth of full speed, 50 -> 100 % added only a quarter more). Speeds now follow a measured speed
-  curve, and the percentage is the estimated share of maximum airflow: 22 % is the slowest steady speed,
-  100 % full speed, and lower non-zero settings run at 22 %. A start from standstill gets half a second of
+  curve, and the percentage is the estimated share of maximum airflow: 20 % is the slowest steady speed,
+  100 % full speed, and lower non-zero settings run at 20 %. A start from standstill gets half a second of
   extra drive.
 - **Buttons:** the panel's button lines are active-low, but they were read as active-high: every action ran
   on release instead of on press, and at startup each button counted as pressed once, which switched the fan
@@ -51,7 +51,7 @@ Builds report `6.0.0-dev`.
 
 ### Upgrade Notes
 
-- Fan percentages now mean estimated airflow (the old 10 % runs like the new 22 %, the old 50 % like about
+- Fan percentages now mean estimated airflow (the old 10 % runs like the new 20 %, the old 50 % like about
   77 %, the old 75 % like about 90 %); review automations that set fixed percentages. `fan/set` and
   `fan/state` keep their 0-255 payload; the README's Home Assistant fan example shows the unit's exact
   percentage in 1 % steps.
