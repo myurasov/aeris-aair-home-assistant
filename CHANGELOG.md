@@ -18,7 +18,8 @@ upstream releases (v5 = 5.0.0); builds before the release report `6.0.0-dev`.
   55; auto-high 1.25 times that), so no Home Assistant automation is needed. `fan/mode/set` and the retained
   `fan/mode/state` (also as Home Assistant fan presets); any manual speed change returns to manual.
 - **Power button:** a short press switches the screen on or off, holding it for a second switches the unit
-  on or off; `fan/power/set` (`ON` / `OFF`) does the same and keeps the mode.
+  on or off; `fan/power/set` (`ON` / `OFF`) does the same and keeps the mode. Off also darkens the ring and
+  button lights, whatever their follow setting; their settings return when the unit turns on.
 - **Version:** the firmware reports its version (semver) on the web page, retained on `version`, and on the
   screen while A is held for two seconds.
 - **Fan speed step:** 1 % by default, 1-25 % in the web page's Fan section or over `fan/step/set`
