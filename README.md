@@ -336,11 +336,12 @@ mqtt:
         {% endif %}
 ```
 
-The fan speed goes from 1 % (the slowest speed the fan holds steadily, about a fifth of full speed) to
-100 %, and each percent adds about the same airflow. Speeds move in steps of 1 % by default; set the step
-(1-25 %) in the Fan section of the web page or with `fan/step/set` (retained state on `fan/step/state`).
-The + and - buttons move one step per press and repeat while held. `fan/set` and `fan/state` still carry
-the percentage as 0-255; the two templates make Home Assistant show the same percentage as the unit.
+The fan speed percentage is the estimated share of the fan's maximum airflow: 22 % is the slowest speed it
+holds steadily, 100 % is full speed, and any lower non-zero setting runs at 22 %. Speeds move in steps of
+1 % by default; set the step (1-25 %) in the Fan section of the web page or with `fan/step/set` (retained
+state on `fan/step/state`). The + and - buttons move one step per press and repeat while held; from 22 % a
+separate press of - turns the fan off. `fan/set` and `fan/state` still carry the percentage as 0-255; the
+two templates make Home Assistant show the same percentage as the unit.
 
 PM2.5 and PM10 are the sensor's mass readings in µg/m³. Builds before this change published the
 sensor's particle-count channels instead, which read many times higher and jump with airflow, so
