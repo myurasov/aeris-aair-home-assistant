@@ -14,8 +14,8 @@
   (retained `fan/step/state`); saved on the unit. The + and - buttons repeat while held.
 - **Fan resume:** the unit saves its fan speed (or off) a few seconds after a change and resumes it after a
   reboot or power cut. The power button resumes the last speed exactly (it used to raise anything below 10 %).
-- **- to off:** stepping the fan down to 0 with - stops it but keeps the screen on (showing OFF); the power
-  button, the display button and MQTT still switch the screen off.
+- **- to off:** holding - stops at 22 %; a separate press of - then stops the fan but keeps the screen on
+  (showing OFF). The power button, the display button and MQTT still switch the screen off.
 - **USB setup:** [`tools/usb-setup`](tools/usb-setup/README.md) writes the Wi-Fi and MQTT settings over USB,
   skipping the `Aeris-XXXX` hotspot and the settings page. It can also install a newer build without
   resetting the settings.
@@ -39,8 +39,9 @@
   particle-count channels, which read many times higher and jumped with airflow.
 - **Fan speeds:** 5 % left the fan standing still, and the steps were very uneven (5 -> 10 % went from off
   to about a fifth of full speed, 50 -> 100 % added only a quarter more). Speeds now follow a measured speed
-  curve: 1 % is the slowest steady speed and each percent adds about the same airflow. A start from
-  standstill gets half a second of extra drive.
+  curve, and the percentage is the estimated share of maximum airflow: 22 % is the slowest steady speed,
+  100 % full speed, and lower non-zero settings run at 22 %. A start from standstill gets half a second of
+  extra drive.
 - **Buttons:** the panel's button lines are active-low, but they were read as active-high: every action ran
   on release instead of on press, and at startup each button counted as pressed once, which switched the fan
   off after every boot. They are now read as active-low with pull-ups.
@@ -51,8 +52,8 @@
 
 - MQTT topics, payloads and web settings are unchanged.
 - PM2.5 and PM10 readings drop to real µg/m³ values; review automation thresholds tuned to the old numbers.
-- The same fan percentage now runs at a different speed (for example 50 % is about 60 % of full speed
-  instead of about 77 %); review automations that set fixed percentages. The README's Home Assistant fan
+- Fan percentages now mean estimated airflow (the old 10 % runs like the new 22 %, the old 50 % like about
+  77 %, the old 75 % like about 90 %); review automations that set fixed percentages. The README's Home Assistant fan
   example now reports the unit's exact percentage in 1 % steps.
 - A newly compiled build still resets the settings on its first boot, unless it is installed with
   `tools/usb-setup`.
