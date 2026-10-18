@@ -48,6 +48,9 @@ Builds report `6.0.0-dev`.
   redrawn before the backlight comes on.
 - **Web page reset:** FACTORY RESET erased the Wi-Fi and MQTT settings on one click; it and ENTER DFU MODE now
   ask for confirmation.
+- **Button lights:** full brightness lit only each button's own LED line. The top of the brightness range now
+  also lights the line shared by all four buttons, about 1.5 times as bright at full; it adds light only while
+  all four are lit. The dimmest level is unchanged.
 
 ### Upgrade Notes
 
